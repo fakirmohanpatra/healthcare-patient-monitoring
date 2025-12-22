@@ -1,6 +1,7 @@
 package com.example.healthcare.domain.vitals;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -8,7 +9,7 @@ import jakarta.persistence.Id;
 import lombok.*;
 
 @Document(collection = "patient_vitals")
-@Getter @Setter 
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -17,7 +18,7 @@ public class PatientVital {
     @Id 
     private String id;
     
-    private String patientId;
+    private UUID patientId;
     private VitalType vitalType;
     private double value;
     private Instant recordedAt;
