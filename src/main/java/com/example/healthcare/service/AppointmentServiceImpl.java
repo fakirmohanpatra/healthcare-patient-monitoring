@@ -29,6 +29,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentResponse scheduleAppointment(CreateAppointmentRequest request) {
+        log.info("[DB_CREATE] Scheduling appointment - patientId={}, doctorId={}, date={}",
+                request.getPatientId(), request.getDoctorId(), request.getAppointmentDate());
+        
+        log.debug("[DB_FETCH] Fetching patient with id={}", request.getPatientId());
         Patient patient = patientRepository.findById(request.getPatientId())
                 .orElseThrow(() -> new RuntimeException("Patient not found with id: " + request.getPatientId()));
         
@@ -39,28 +43,37 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .status(AppointmentStatus.SCHEDULED)
                 .notes(request.getNotes())
                 .build();
+        
+        log.debug("[DB_CREATE] Saving appointment to database");
         Appointment savedAppointment = appointmentRepository.save(appointment);
+        log.info("[DB_CREATE] Appointment created successfully with id={}", savedAppointment.getId());
         return mapToResponse(savedAppointment);
     }
 
     @Override
-    public AppointmentResponse getAppointmentById(String appointmentId) {
-        Appointment appointment = appointmentRepository.findById(UUID.fromString(appointmentId))
+    public AppointmentResponse getAppointmentById(UUID appointmentId) {
+        log.info("[DB_FETCH] Fetching appointment with id={}", appointmentId);
+        Appointment appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found with id: " + appointmentId));
+        log.debug("[DB_FETCH] Successfully retrieved appointment");
         return mapToResponse(appointment);
     }
 
     @Override
-    public List<AppointmentResponse> getAppointmentsByPatientId(String patientId) {
-        List<Appointment> appointments = appointmentRepository.findByPatient_Id(UUID.fromString(patientId));
+    public List<AppointmentResponse> getAppointmentsByPatientId(UUID patientId) {
+        log.info("[DB_FETCH] Fetching appointments for patientId={}", patientId);
+        List<Appointment> appointments = appointmentRepository.findByPatient_Id(patientId);
+        log.info("[DB_FETCH] Retrieved {} appointments for patientId={}", appointments.size(), patientId);
         return appointments.stream()
                 .map(this::mapToResponse)
                 .toList();
     }
 
     @Override
-    public List<AppointmentResponse> getAppointmentsByDoctorId(String doctorId) {
-        List<Appointment> appointments = appointmentRepository.findByDoctorId(UUID.fromString(doctorId));
+    public List<AppointmentResponse> getAppointmentsByDoctorId(UUID doctorId) {
+        log.info("[DB_FETCH] Fetching appointments for doctorId={}", doctorId);
+        List<Appointment> appointments = appointmentRepository.findByDoctorId(doctorId);
+        log.info("[DB_FETCH] Retrieved {} appointments for doctorId={}", appointments.size(), doctorId);
         return appointments.stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -68,8 +81,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public List<AppointmentResponse> getAppointmentsBetweenDates(String startDate, String endDate) {
+        log.info("[DB_FETCH] Fetching appointments between {} and {}", startDate, endDate);
         List<Appointment> appointments = appointmentRepository.findByAppointmentDatetimeBetween(
                 Instant.parse(startDate), Instant.parse(endDate));
+        log.info("[DB_FETCH] Retrieved {} appointments in date range", appointments.size());
         return appointments.stream()
                 .map(this::mapToResponse)
                 .toList();

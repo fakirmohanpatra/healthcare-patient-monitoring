@@ -18,7 +18,7 @@ public class PatientVital {
     @Id 
     private String id;
     
-    private UUID patientId;
+    private String patientId;
     private VitalType vitalType;
     private double value;
     private Instant recordedAt;

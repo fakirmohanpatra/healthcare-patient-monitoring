@@ -27,14 +27,20 @@ public class MedicalrecordServiceImpl implements MedicalRecordService {
     private final PatientRepository patientRepository;
 
     @Override
-    public MedicalRecordResponse getMedicalRecordById(String recordId) {
-        MedicalRecord medicalRecord = medicalRecordRepository.findById(UUID.fromString(recordId))
+    public MedicalRecordResponse getMedicalRecordById(UUID recordId) {
+        log.info("[DB_FETCH] Fetching medical record with id={}", recordId);
+        MedicalRecord medicalRecord = medicalRecordRepository.findById(recordId)
                 .orElseThrow(() -> new RuntimeException("Medical record not found with id: " + recordId));
+        log.debug("[DB_FETCH] Successfully retrieved medical record");
         return mapToResponse(medicalRecord);
     }
 
     @Override
     public MedicalRecordResponse createMedicalRecord(CreateMedicalRecordRequest request, UUID doctorId) {
+        log.info("[DB_CREATE] Creating medical record - patientId={}, doctorId={}, diagnosis={}",
+                request.getPatientId(), doctorId, request.getDiagnosis());
+        
+        log.debug("[DB_FETCH] Fetching patient with id={}", request.getPatientId());
         Patient patient = patientRepository.findById(request.getPatientId())
                 .orElseThrow(() -> new RuntimeException("Patient not found with id: " + request.getPatientId()));
         
@@ -45,13 +51,18 @@ public class MedicalrecordServiceImpl implements MedicalRecordService {
                 .treatmentPlan(request.getTreatmentPlan())
                 .recordDate(Instant.now())
                 .build();
+        
+        log.debug("[DB_CREATE] Saving medical record to database");
         MedicalRecord savedRecord = medicalRecordRepository.save(medicalRecord);
+        log.info("[DB_CREATE] Medical record created successfully with id={}", savedRecord.getId());
         return mapToResponse(savedRecord);
     }
 
     @Override
-    public List<MedicalRecordResponse> getMedicalRecordsByPatientId(String patientId) {
-        List<MedicalRecord> records = medicalRecordRepository.findByPatient_Id(UUID.fromString(patientId));
+    public List<MedicalRecordResponse> getMedicalRecordsByPatientId(UUID patientId) {
+        log.info("[DB_FETCH] Fetching medical records for patientId={}", patientId);
+        List<MedicalRecord> records = medicalRecordRepository.findByPatient_Id(patientId);
+        log.info("[DB_FETCH] Retrieved {} medical records for patientId={}", records.size(), patientId);
         return records.stream()
                 .map(this::mapToResponse)
                 .toList();

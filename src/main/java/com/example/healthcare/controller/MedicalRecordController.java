@@ -29,7 +29,7 @@ public class MedicalRecordController {
     
     @GetMapping("/{recordId}")
     @PreAuthorize("hasRole('ROLE_DOCTOR') or hasRole('ROLE_NURSE') or hasRole('ROLE_ADMIN') or hasRole('ROLE_PATIENT')")
-    public MedicalRecordResponse getMedicalRecordById(@PathVariable String recordId) {
+    public MedicalRecordResponse getMedicalRecordById(@PathVariable UUID recordId) {
         return medicalRecordService.getMedicalRecordById(recordId);
     }
 
@@ -45,7 +45,7 @@ public class MedicalRecordController {
 
     @GetMapping("/by-patient/{patientId}")
     @PreAuthorize("hasRole('ROLE_DOCTOR') or hasRole('ROLE_NURSE') or hasRole('ROLE_ADMIN') or hasRole('ROLE_PATIENT')")
-    public List<MedicalRecordResponse> getMedicalRecordsByPatientId(@PathVariable String patientId) {
+    public List<MedicalRecordResponse> getMedicalRecordsByPatientId(@PathVariable UUID patientId) {
         return medicalRecordService.getMedicalRecordsByPatientId(patientId);
     }
 }

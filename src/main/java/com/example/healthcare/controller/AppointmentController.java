@@ -10,6 +10,7 @@ import com.example.healthcare.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,21 +43,21 @@ public class AppointmentController {
     @GetMapping("/by-doctor/{doctorId}")
     @PreAuthorize("hasRole('ROLE_DOCTOR') or hasRole('ROLE_NURSE') or hasRole('ROLE_ADMIN')")
     public List<AppointmentResponse> getAppointmentsByDoctorId(
-            @PathVariable String doctorId) {
+            @PathVariable UUID doctorId) {
         return appointmentService.getAppointmentsByDoctorId(doctorId);
     }
 
     @GetMapping("/by-patient/{patientId}")
     @PreAuthorize("hasRole('ROLE_PATIENT') or hasRole('ROLE_DOCTOR') or hasRole('ROLE_NURSE') or hasRole('ROLE_ADMIN')")
     public List<AppointmentResponse> getAppointmentsByPatientId(
-            @PathVariable String patientId) {
+            @PathVariable UUID patientId) {
         return appointmentService.getAppointmentsByPatientId(patientId);
     }
 
     @GetMapping("/{appointmentId}")
     @PreAuthorize("hasRole('ROLE_PATIENT') or hasRole('ROLE_DOCTOR') or hasRole('ROLE_NURSE') or hasRole('ROLE_ADMIN')")
     public AppointmentResponse getAppointmentById(
-            @PathVariable String appointmentId) {
+            @PathVariable UUID appointmentId) {
         return appointmentService.getAppointmentById(appointmentId);
     }
     

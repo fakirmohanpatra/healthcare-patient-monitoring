@@ -7,7 +7,7 @@ import com.example.healthcare.controller.dto.CreateMedicalRecordRequest;
 import com.example.healthcare.controller.dto.MedicalRecordResponse;
 
 public interface MedicalRecordService {
-    MedicalRecordResponse getMedicalRecordById(String recordId);
+    MedicalRecordResponse getMedicalRecordById(UUID recordId);
     MedicalRecordResponse createMedicalRecord(CreateMedicalRecordRequest request, UUID doctorId);
-    List<MedicalRecordResponse> getMedicalRecordsByPatientId(String patientId);
+    List<MedicalRecordResponse> getMedicalRecordsByPatientId(UUID patientId);
 }

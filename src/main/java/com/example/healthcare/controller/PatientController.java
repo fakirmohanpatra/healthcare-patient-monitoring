@@ -10,6 +10,7 @@ import com.example.healthcare.service.PatientService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +28,7 @@ public class PatientController {
     private final PatientService patientService;
     
     @GetMapping("/{patientId}")
-    public PatientResponse getPatientById(@PathVariable String patientId) {
+    public PatientResponse getPatientById(@PathVariable UUID patientId) {
         return patientService.getPatientById(patientId);
     }
 

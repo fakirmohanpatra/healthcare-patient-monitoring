@@ -38,17 +38,19 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientResponse getPatientById(String patientId) {
-        log.info("Fetching patient with id={}", patientId);
-        Patient patient = patientRepository.findById(UUID.fromString(patientId))
+    public PatientResponse getPatientById(UUID patientId) {
+        log.info("[DB_FETCH] Fetching patient with id={}", patientId);
+        Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new RuntimeException("Patient not found with id: " + patientId));
+        log.debug("[DB_FETCH] Successfully retrieved patient: {}", patient.getName());
         return mapToResponse(patient);
     }
 
     @Override
     public List<PatientResponse> getAllPatients() {
-        log.info("Fetching all patients");
+        log.info("[DB_FETCH] Fetching all patients from database");
         List<Patient> patients = patientRepository.findAll();
+        log.info("[DB_FETCH] Retrieved {} patients from database", patients.size());
         return patients.stream()
                 .map(this::mapToResponse)
                 .toList();

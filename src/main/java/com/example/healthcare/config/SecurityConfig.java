@@ -32,14 +32,22 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**",
                                 "/public/**",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/swagger-ui.html",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**",
+                                "/actuator/**"
                             ).permitAll()
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            );
+            )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .anonymous(anonymous -> anonymous.disable())
+            .httpBasic(basic -> basic.disable())
+            .formLogin(form -> form.disable());
 
         return http.build();
     }

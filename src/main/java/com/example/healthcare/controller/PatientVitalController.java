@@ -52,7 +52,7 @@ public class PatientVitalController {
     @PostMapping
     public ResponseEntity<PatientVital> addVital(@RequestBody PatientVitalRequest request) {
         PatientVital patientVital = PatientVital.builder()
-                .patientId(UUID.fromString(request.getPatientId()))
+                .patientId(request.getPatientId())
                 .vitalType(request.getVitalType())
                 .value(request.getValue())
                 .recordedAt(Instant.now())
@@ -67,7 +67,7 @@ public class PatientVitalController {
     public ResponseEntity<List<PatientVital>> addVitals(@RequestBody List<PatientVitalRequest> requests) {
         List<PatientVital> patientVitals = requests.stream()
                 .map(request -> PatientVital.builder()
-                        .patientId(UUID.fromString(request.getPatientId()))
+                        .patientId(request.getPatientId())
                         .vitalType(request.getVitalType())
                         .value(request.getValue())
                         .recordedAt(Instant.now())
