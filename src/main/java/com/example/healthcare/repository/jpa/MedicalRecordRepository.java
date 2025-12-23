@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.healthcare.model.MedicalRecord;
 
 public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, UUID> {
-    List<MedicalRecord> findByPatientId(UUID patientId);
+    List<MedicalRecord> findByPatient_Id(UUID patientId);
     List<MedicalRecord> findByDoctorId(UUID doctorId);
 }

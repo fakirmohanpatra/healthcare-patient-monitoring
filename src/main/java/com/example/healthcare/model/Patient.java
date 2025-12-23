@@ -13,6 +13,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Patient {
 
     @Id
@@ -29,8 +30,10 @@ public class Patient {
     private String externalId; // hospital or insurance ID
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Appointment> appointments = new ArrayList<>();
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<MedicalRecord> medicalRecords = new ArrayList<>();
 }

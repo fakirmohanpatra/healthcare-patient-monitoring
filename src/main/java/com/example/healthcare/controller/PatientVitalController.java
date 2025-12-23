@@ -3,11 +3,14 @@ package com.example.healthcare.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.healthcare.controller.dto.PatientVitalRequest;
 import com.example.healthcare.domain.vitals.PatientVital;
 import com.example.healthcare.domain.vitals.VitalType;
 import com.example.healthcare.service.PatientVitalService;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,7 +50,13 @@ public class PatientVitalController {
 
     // Add a new vital
     @PostMapping
-    public ResponseEntity<PatientVital> addVital(@RequestBody PatientVital patientVital) {
+    public ResponseEntity<PatientVital> addVital(@RequestBody PatientVitalRequest request) {
+        PatientVital patientVital = PatientVital.builder()
+                .patientId(UUID.fromString(request.getPatientId()))
+                .vitalType(request.getVitalType())
+                .value(request.getValue())
+                .recordedAt(Instant.now())
+                .build();
         PatientVital vital = patientVitalService.recordPatientVital(patientVital);
 
         return ResponseEntity.ok(vital);
@@ -55,15 +64,16 @@ public class PatientVitalController {
 
     // Bulk add vitals
     @PostMapping("/bulk")
-    public ResponseEntity<List<PatientVital>> addVitals(@RequestBody List<PatientVital> patientVitals) {
+    public ResponseEntity<List<PatientVital>> addVitals(@RequestBody List<PatientVitalRequest> requests) {
+        List<PatientVital> patientVitals = requests.stream()
+                .map(request -> PatientVital.builder()
+                        .patientId(UUID.fromString(request.getPatientId()))
+                        .vitalType(request.getVitalType())
+                        .value(request.getValue())
+                        .recordedAt(Instant.now())
+                        .build())
+                .toList();
         List<PatientVital> vitals = patientVitalService.recordVitalsBulk(patientVitals);
         return ResponseEntity.ok(vitals);
     }
-    
-    
-    
-
-    
-    
-    
 }

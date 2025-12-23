@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.healthcare.model.Appointment;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
-    List<Appointment> findByPatientId(UUID patientId);
+    List<Appointment> findByPatient_Id(UUID patientId);
     List<Appointment> findByDoctorId(UUID doctorId);
     List<Appointment> findByAppointmentDatetimeBetween(Instant start, Instant end);
 }
